@@ -24,4 +24,6 @@ export default async function HomePage() {
           No products available.
         </p>
       )}
-    </main
+    </main>
+  );
+}
