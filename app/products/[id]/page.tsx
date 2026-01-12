@@ -10,6 +10,24 @@ export default async function ProductPage({
 }) {
   const product = await getProductById(params.id);
 
+  // ✅ CRITICAL GUARD
+  if (!product) {
+    return (
+      <main className="p-6 max-w-4xl mx-auto text-center">
+        <p className="text-gray-500 mb-4">
+          Product not found.
+        </p>
+
+        <Link
+          href="/"
+          className="text-blue-600 hover:underline"
+        >
+          ← Back to products
+        </Link>
+      </main>
+    );
+  }
+
   return (
     <main className="p-6 max-w-4xl mx-auto">
       <Link

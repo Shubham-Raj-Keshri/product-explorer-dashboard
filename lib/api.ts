@@ -14,21 +14,20 @@ export async function getProducts(): Promise<Product[]> {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch products");
+    return [];
   }
 
   return res.json();
 }
 
 /* Fetch single product */
-export async function getProductById(id: string): Promise<Product> {
-  const res = await fetch(
-    `https://fakestoreapi.com/products/${Number(id)}`,
-    { cache: "no-store" }
-  );
+export async function getProductById(id: string): Promise<Product | null> {
+  const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch product");
+    return null;
   }
 
   return res.json();
