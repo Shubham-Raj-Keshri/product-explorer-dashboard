@@ -11,6 +11,7 @@ This project was developed as part of a frontend technical assignment to demonst
 ## 🚀 Live Demo
 
 🔗 https://product-explorer-dashboard2.netlify.app/
+🔗 https://product-explorer-dashboard-phi.vercel.app/
 
 ---
 
