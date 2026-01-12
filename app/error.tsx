@@ -8,21 +8,19 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className="p-6 max-w-7xl mx-auto text-center">
-      <h1 className="text-2xl font-bold text-red-600 mb-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <h2 className="text-xl font-semibold text-red-600">
         Something went wrong
-      </h1>
+      </h2>
 
-      <p className="text-gray-600 mb-6">
-        {error.message}
-      </p>
+      <p className="text-gray-600">{error.message}</p>
 
       <button
-        onClick={reset}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg"
+        onClick={() => reset()}
+        className="rounded bg-blue-600 px-4 py-2 text-white"
       >
         Try again
       </button>
-    </main>
+    </div>
   );
 }
