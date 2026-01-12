@@ -9,38 +9,29 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ products }: ProductGridProps) {
-  const [searchText, setSearchText] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [mounted, setMounted] = useState(false);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
   const [favorites, setFavorites] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
-  // Load favorites from localStorage on first render
   useEffect(() => {
+    setMounted(true);
     const stored = localStorage.getItem("favorites");
-    if (stored) {
-      setFavorites(JSON.parse(stored));
-    }
+    if (stored) setFavorites(JSON.parse(stored));
   }, []);
 
-  // ✅ Defensive guard: API returned no products
-  if (!products || products.length === 0) {
-    return (
-      <p className="text-center text-gray-500 mt-10">
-        No products available right now.
-      </p>
-    );
-  }
+  if (!mounted) return null;
 
-  // Categories derived from product data
   const categories = [
     "all",
-    ...Array.from(new Set(products.map((item) => item.category))),
+    ...Array.from(new Set(products.map((p) => p.category))),
   ];
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => {
       const updated = prev.includes(id)
-        ? prev.filter((favId) => favId !== id)
+        ? prev.filter((f) => f !== id)
         : [...prev, id];
 
       localStorage.setItem("favorites", JSON.stringify(updated));
@@ -48,106 +39,98 @@ export default function ProductGrid({ products }: ProductGridProps) {
     });
   };
 
-  // Client-side filtering
-  const visibleProducts = products.filter((item) => {
-    const matchesSearch = item.title
+  const filtered = products.filter((p) => {
+    const matchSearch = p.title
       .toLowerCase()
-      .includes(searchText.toLowerCase());
+      .includes(search.toLowerCase());
 
-    const matchesCategory =
-      selectedCategory === "all" ||
-      item.category === selectedCategory;
+    const matchCategory =
+      category === "all" || p.category === category;
 
-    const matchesFavorite =
-      !showFavoritesOnly || favorites.includes(item.id);
+    const matchFavorite =
+      !showFavoritesOnly || favorites.includes(p.id);
 
-    return matchesSearch && matchesCategory && matchesFavorite;
+    return matchSearch && matchCategory && matchFavorite;
   });
 
   return (
     <>
-      {/* Controls */}
-      <div className="flex flex-col gap-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <input
-            type="text"
-            placeholder="Search by product name"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search products"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 p-3 border rounded-lg"
+        />
 
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="p-3 border rounded-lg bg-white"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat === "all" ? "All Categories" : cat.toUpperCase()}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <label className="flex items-center gap-2 text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={showFavoritesOnly}
-            onChange={(e) => setShowFavoritesOnly(e.target.checked)}
-          />
-          Show favorites only
-        </label>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="p-3 border rounded-lg bg-white"
+        >
+          {categories.map((c) => (
+            <option key={c} value={c}>
+              {c === "all" ? "All Categories" : c.toUpperCase()}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Product Grid */}
+      <label className="flex items-center gap-2 mb-6 text-sm">
+        <input
+          type="checkbox"
+          checked={showFavoritesOnly}
+          onChange={(e) =>
+            setShowFavoritesOnly(e.target.checked)
+          }
+        />
+        Show favorites only
+      </label>
+
+      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {visibleProducts.map((product) => {
-          const isFavorite = favorites.includes(product.id);
-
-          return (
-            <Link
-              key={product.id}
-              href={`/products/${product.id}`}
-              className="relative bg-white rounded-lg shadow hover:shadow-lg transition p-4 cursor-pointer"
+        {filtered.map((product) => (
+          <Link
+            key={product.id}
+            href={`/products/${product.id}`}
+            className="relative bg-white rounded-lg shadow hover:shadow-lg p-4"
+          >
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                toggleFavorite(product.id);
+              }}
+              className="absolute top-2 right-2 text-xl"
             >
-              {/* Favorite button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault(); // prevent navigation
-                  toggleFavorite(product.id);
-                }}
-                className="absolute top-2 right-2 text-xl"
-                aria-label="Toggle favorite"
-              >
-                {isFavorite ? "❤️" : "🤍"}
-              </button>
+              {favorites.includes(product.id) ? "❤️" : "🤍"}
+            </button>
 
-              <img
-                src={product.image}
-                alt={product.title}
-                className="h-48 w-full object-contain bg-gray-50 rounded mb-4"
-              />
+            <img
+              src={product.image}
+              alt={product.title}
+              className="h-48 w-full object-contain bg-gray-50 mb-4"
+            />
 
-              <h2 className="font-semibold text-sm line-clamp-2">
-                {product.title}
-              </h2>
+            <h2 className="font-semibold text-sm line-clamp-2">
+              {product.title}
+            </h2>
 
-              <p className="text-gray-700 mt-2">
-                ₹ {product.price.toFixed(2)}
-              </p>
+            <p className="mt-2 font-medium">
+              ₹ {product.price.toFixed(2)}
+            </p>
 
-              <span className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full mt-2 inline-block">
-                {product.category}
-              </span>
-            </Link>
-          );
-        })}
+            <span className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full mt-2 inline-block">
+              {product.category}
+            </span>
+          </Link>
+        ))}
       </div>
 
-      {visibleProducts.length === 0 && (
-        <p className="text-center text-gray-500 mt-10">
-          No matching products found
+      {filtered.length === 0 && (
+        <p className="text-center mt-10 text-gray-500">
+          No products found.
         </p>
       )}
     </>

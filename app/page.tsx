@@ -4,7 +4,6 @@ import ProductGrid from "./components/ProductGrid";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  // ✅ Explicit typing fixes Vercel build error
   const products: Product[] = await getProducts();
 
   return (
@@ -17,7 +16,13 @@ export default async function HomePage() {
         Browse and explore products
       </p>
 
-      <ProductGrid products={products} />
+      {products.length === 0 ? (
+        <p className="text-gray-500">
+          Unable to load products right now.
+        </p>
+      ) : (
+        <ProductGrid products={products} />
+      )}
     </main>
   );
 }

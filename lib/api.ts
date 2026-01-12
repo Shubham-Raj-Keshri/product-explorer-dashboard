@@ -7,37 +7,41 @@ export interface Product {
   description: string;
 }
 
-/* Fetch all products */
+/* Fetch all products (SAFE – never throws) */
 export async function getProducts(): Promise<Product[]> {
-  const res = await fetch("https://fakestoreapi.com/products", {
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch("https://fakestoreapi.com/products", {
+      cache: "no-store",
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
+    if (!res.ok) {
+      return [];
+    }
+
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
   }
-
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
 }
 
-/* Fetch single product */
+/* Fetch single product (SAFE) */
 export async function getProductById(
   id: string
 ): Promise<Product | null> {
-  const res = await fetch(
-    `https://fakestoreapi.com/products/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  try {
+    const res = await fetch(
+      `https://fakestoreapi.com/products/${id}`,
+      { cache: "no-store" }
+    );
 
-  if (!res.ok) {
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+    return data && data.id ? data : null;
+  } catch {
     return null;
   }
-
-  const data = await res.json();
-  if (!data || !data.id) return null;
-
-  return data;
 }
