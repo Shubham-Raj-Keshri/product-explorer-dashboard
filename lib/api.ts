@@ -7,19 +7,17 @@ export interface Product {
   description: string;
 }
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
 /* Fetch all products */
 export async function getProducts(): Promise<Product[]> {
   try {
-    const res = await fetch(`${BASE_URL}/api/products`, {
+    const res = await fetch("/api/products", {
       cache: "no-store",
     });
 
     if (!res.ok) return [];
     return await res.json();
-  } catch {
+  } catch (error) {
+    console.error("getProducts error:", error);
     return [];
   }
 }
@@ -29,13 +27,14 @@ export async function getProductById(
   id: string
 ): Promise<Product | null> {
   try {
-    const res = await fetch(`${BASE_URL}/api/products/${id}`, {
+    const res = await fetch(`/api/products/${id}`, {
       cache: "no-store",
     });
 
     if (!res.ok) return null;
     return await res.json();
-  } catch {
+  } catch (error) {
+    console.error("getProductById error:", error);
     return null;
   }
 }
