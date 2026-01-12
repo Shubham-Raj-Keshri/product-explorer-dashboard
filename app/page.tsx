@@ -1,10 +1,7 @@
-
-export const runtime = "nodejs";
-
-
 import { getProducts, Product } from "@/lib/api";
 import ProductGrid from "./components/ProductGrid";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
@@ -27,6 +24,4 @@ export default async function HomePage() {
           No products available.
         </p>
       )}
-    </main>
-  );
-}
+    </main

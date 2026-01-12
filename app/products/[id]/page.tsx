@@ -1,6 +1,8 @@
 import { getProductById } from "@/lib/api";
 import Link from "next/link";
 
+
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export default async function ProductPage({
