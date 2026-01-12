@@ -37,10 +37,7 @@ export async function getProductById(
   }
 
   const data = await res.json();
-
-  if (!data || !data.id) {
-    return null;
-  }
+  if (!data || !data.id) return null;
 
   return data;
 }

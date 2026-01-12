@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "Product Explorer",
-  description: "Next.js Product Explorer Dashboard",
+  description: "Product Explorer Dashboard",
 };
 
 export default function RootLayout({
