@@ -14,11 +14,15 @@ export default function ProductGrid({ products }: ProductGridProps) {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
+  // Load favorites from localStorage on first render
   useEffect(() => {
     const stored = localStorage.getItem("favorites");
-    if (stored) setFavorites(JSON.parse(stored));
+    if (stored) {
+      setFavorites(JSON.parse(stored));
+    }
   }, []);
 
+  // ✅ Defensive guard: API returned no products
   if (!products || products.length === 0) {
     return (
       <p className="text-center text-gray-500 mt-10">
@@ -27,15 +31,16 @@ export default function ProductGrid({ products }: ProductGridProps) {
     );
   }
 
+  // Categories derived from product data
   const categories = [
     "all",
-    ...Array.from(new Set(products.map((p) => p.category))),
+    ...Array.from(new Set(products.map((item) => item.category))),
   ];
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => {
       const updated = prev.includes(id)
-        ? prev.filter((x) => x !== id)
+        ? prev.filter((favId) => favId !== id)
         : [...prev, id];
 
       localStorage.setItem("favorites", JSON.stringify(updated));
@@ -43,6 +48,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
     });
   };
 
+  // Client-side filtering
   const visibleProducts = products.filter((item) => {
     const matchesSearch = item.title
       .toLowerCase()
@@ -60,6 +66,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
 
   return (
     <>
+      {/* Controls */}
       <div className="flex flex-col gap-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <input
@@ -67,7 +74,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
             placeholder="Search by product name"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="flex-1 p-3 border rounded-lg"
+            className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
 
           <select
@@ -83,7 +90,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
           </select>
         </div>
 
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-gray-700">
           <input
             type="checkbox"
             checked={showFavoritesOnly}
@@ -93,6 +100,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
         </label>
       </div>
 
+      {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {visibleProducts.map((product) => {
           const isFavorite = favorites.includes(product.id);
@@ -101,14 +109,16 @@ export default function ProductGrid({ products }: ProductGridProps) {
             <Link
               key={product.id}
               href={`/products/${product.id}`}
-              className="relative bg-white rounded-lg shadow p-4"
+              className="relative bg-white rounded-lg shadow hover:shadow-lg transition p-4 cursor-pointer"
             >
+              {/* Favorite button */}
               <button
                 onClick={(e) => {
-                  e.preventDefault();
+                  e.preventDefault(); // prevent navigation
                   toggleFavorite(product.id);
                 }}
                 className="absolute top-2 right-2 text-xl"
+                aria-label="Toggle favorite"
               >
                 {isFavorite ? "❤️" : "🤍"}
               </button>
@@ -116,7 +126,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
               <img
                 src={product.image}
                 alt={product.title}
-                className="h-48 w-full object-contain mb-4"
+                className="h-48 w-full object-contain bg-gray-50 rounded mb-4"
               />
 
               <h2 className="font-semibold text-sm line-clamp-2">

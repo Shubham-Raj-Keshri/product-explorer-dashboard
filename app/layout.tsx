@@ -1,10 +1,5 @@
 import "./globals.css";
 
-export const metadata = {
-  title: "Product Explorer",
-  description: "Product Explorer Dashboard",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -12,9 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-100 text-gray-900">
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
