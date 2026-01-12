@@ -1,3 +1,4 @@
+<img width="1887" height="871" alt="image" src="https://github.com/user-attachments/assets/c2039978-0d1a-4950-a45c-e8a71c4c3523" />
 # Product Explorer Dashboard
 
 A production-style frontend application built using **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**.  
