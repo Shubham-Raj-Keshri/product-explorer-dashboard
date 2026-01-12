@@ -1,3 +1,7 @@
+
+export const runtime = "nodejs";
+
+
 import { getProducts, Product } from "@/lib/api";
 import ProductGrid from "./components/ProductGrid";
 
