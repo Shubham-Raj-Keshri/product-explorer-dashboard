@@ -22,6 +22,15 @@ export default function ProductGrid({ products }: ProductGridProps) {
     }
   }, []);
 
+  // ✅ Defensive guard: API returned no products
+  if (!products || products.length === 0) {
+    return (
+      <p className="text-center text-gray-500 mt-10">
+        No products available right now.
+      </p>
+    );
+  }
+
   // Categories derived from product data
   const categories = [
     "all",
@@ -39,7 +48,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
     });
   };
 
-  // Client-side filtering keeps interactions fast
+  // Client-side filtering
   const visibleProducts = products.filter((item) => {
     const matchesSearch = item.title
       .toLowerCase()
