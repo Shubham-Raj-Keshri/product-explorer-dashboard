@@ -16,12 +16,12 @@ export default async function HomePage() {
         Browse and explore products
       </p>
 
-      {products.length === 0 ? (
-        <p className="text-gray-500">
-          Unable to load products right now.
-        </p>
-      ) : (
+      {products.length > 0 ? (
         <ProductGrid products={products} />
+      ) : (
+        <p className="text-gray-500">
+          No products available.
+        </p>
       )}
     </main>
   );
