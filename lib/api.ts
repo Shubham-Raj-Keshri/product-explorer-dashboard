@@ -10,9 +10,13 @@ export interface Product {
 /* Fetch all products (SAFE – never throws) */
 export async function getProducts(): Promise<Product[]> {
   try {
-    const res = await fetch("https://fakestoreapi.com/products", {
-      cache: "no-store",
-    });
+   const res = await fetch("https://fakestoreapi.com/products", {
+  cache: "no-store",
+  headers: {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json",
+  },
+});
 
     if (!res.ok) {
       return [];
@@ -31,9 +35,16 @@ export async function getProductById(
 ): Promise<Product | null> {
   try {
     const res = await fetch(
-      `https://fakestoreapi.com/products/${id}`,
-      { cache: "no-store" }
-    );
+  `https://fakestoreapi.com/products/${id}`,
+  {
+    cache: "no-store",
+    headers: {
+      "User-Agent": "Mozilla/5.0",
+      "Accept": "application/json",
+    },
+  }
+);
+
 
     if (!res.ok) {
       return null;
