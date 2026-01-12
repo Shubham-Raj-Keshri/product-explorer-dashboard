@@ -5,22 +5,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const res = await fetch(
-      `https://fakestoreapi.com/products/${params.id}`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-
-    if (!res.ok) {
-      return NextResponse.json(null, { status: 200 });
-    }
-
+    const res = await fetch(`https://fakestoreapi.com/products/${params.id}`);
     const data = await res.json();
     return NextResponse.json(data);
   } catch {
-    return NextResponse.json(null, { status: 200 });
+    return NextResponse.json(null);
   }
 }
