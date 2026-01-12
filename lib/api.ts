@@ -1,5 +1,3 @@
-import { headers } from "next/headers";
-
 export interface Product {
   id: number;
   title: string;
@@ -9,30 +7,10 @@ export interface Product {
   description: string;
 }
 
-/**
- * Helper to build absolute base URL
- * Works on localhost (3000 / 3001) and Vercel
- */
-function getBaseUrl() {
-  const headersList = headers();
-  const host = headersList.get("host");
-
-  // Fallback safety (should not usually be needed)
-  if (!host) {
-    return "http://localhost:3000";
-  }
-
-  return host.includes("localhost")
-    ? `http://${host}`
-    : `https://${host}`;
-}
-
 /* Fetch all products */
 export async function getProducts(): Promise<Product[]> {
   try {
-    const baseUrl = getBaseUrl();
-
-    const res = await fetch(`${baseUrl}/api/products`, {
+    const res = await fetch("https://fakestoreapi.com/products", {
       cache: "no-store",
     });
 
@@ -41,7 +19,7 @@ export async function getProducts(): Promise<Product[]> {
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error("getProducts error:", error);
+    console.error("getProducts failed:", error);
     return [];
   }
 }
@@ -51,11 +29,11 @@ export async function getProductById(
   id: string
 ): Promise<Product | null> {
   try {
-    const baseUrl = getBaseUrl();
-
     const res = await fetch(
-      `${baseUrl}/api/products/${id}`,
-      { cache: "no-store" }
+      `https://fakestoreapi.com/products/${id}`,
+      {
+        cache: "no-store",
+      }
     );
 
     if (!res.ok) return null;
@@ -63,7 +41,7 @@ export async function getProductById(
     const data = await res.json();
     return data && data.id ? data : null;
   } catch (error) {
-    console.error("getProductById error:", error);
+    console.error("getProductById failed:", error);
     return null;
   }
 }
