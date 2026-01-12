@@ -7,34 +7,18 @@ export interface Product {
   description: string;
 }
 
-/* Fetch all products */
 export async function getProducts(): Promise<Product[]> {
-  try {
-    const res = await fetch("/api/products", {
-      cache: "no-store",
-    });
-
-    if (!res.ok) return [];
-    return await res.json();
-  } catch (error) {
-    console.error("getProducts error:", error);
-    return [];
-  }
+  const res = await fetch("/api/products", { cache: "no-store" });
+  if (!res.ok) return [];
+  return res.json();
 }
 
-/* Fetch single product */
 export async function getProductById(
   id: string
 ): Promise<Product | null> {
-  try {
-    const res = await fetch(`/api/products/${id}`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) return null;
-    return await res.json();
-  } catch (error) {
-    console.error("getProductById error:", error);
-    return null;
-  }
+  const res = await fetch(`/api/products/${id}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
